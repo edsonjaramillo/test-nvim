@@ -2,6 +2,10 @@
 ---@author Edson
 ---@date 2025
 
+local function save()
+    vim.cmd.write({ bang = true })
+end
+
 -- Prompts user to open a new file using Telescope
 ---@return nil
 local function open_new_file()
@@ -40,7 +44,7 @@ local function prompt_save_or_discard()
         }, function(choice)
             if choice == "Yes" then
                 -- Force save: equivalent to :write!
-                vim.cmd.write({ bang = true })
+                save()
                 vim.cmd.redraw()
                 open_new_file()
             else
@@ -61,3 +65,20 @@ vim.keymap.set("n", "<C-w>", prompt_save_or_discard, {
     silent = true,
     desc = "Prompt to save current file and then open new file"
 })
+
+
+-- Define mappings save operations
+local mappings = {
+    { modes = { "n", "i" }, key = "<C-s>", action = save },
+}
+
+-- Apply all mappings
+for _, mapping in ipairs(mappings) do
+    for _, mode in ipairs(mapping.modes) do
+        vim.keymap.set(mode, mapping.key, mapping.action, {
+            noremap = true,
+            silent = true,
+            desc = "Save current buffer"
+        })
+    end
+end
