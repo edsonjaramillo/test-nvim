@@ -32,7 +32,7 @@ return {
             })
 
             -- Keybindings
-            vim.keymap.set({ "n", "v" }, "<leader>s", function()
+            vim.keymap.set({ "n", "v" }, "<C-s>", function()
                 conform.format(format_settings)
             end, { desc = "Format file or range (in visual mode)" })
 

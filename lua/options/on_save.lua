@@ -55,8 +55,8 @@ local function prompt_save_or_discard()
     end
 end
 
--- Keymapping: <leader>w triggers the workflow
-vim.keymap.set("n", "<leader>w", prompt_save_or_discard, {
+-- Keymapping: ctrl-w triggers the workflow
+vim.keymap.set("n", "<C-w>", prompt_save_or_discard, {
     noremap = true,
     silent = true,
     desc = "Prompt to save current file and then open new file"
