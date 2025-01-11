@@ -6,7 +6,6 @@
 ---@return nil
 local function open_new_file()
     local options = { "Yes", "No" }
-    -- Create selection dialog for new file
     vim.ui.select(options, {
         prompt = "Do you want to open a new file?",
         format_item = function(item)
@@ -14,11 +13,15 @@ local function open_new_file()
         end,
     }, function(choice)
         if choice == "Yes" then
-            vim.cmd.redraw()                          -- Clear screen
-            require('telescope.builtin').find_files() -- Open file picker
+            -- Clear the screen for neatness
+            vim.cmd.redraw()
+            -- Open file picker
+            require('telescope.builtin').find_files()
         else
-            vim.cmd.redraw()                          -- Clear screen
-            vim.cmd.quit({ bang = true })             -- Force quit
+            -- Clear the screen for neatness
+            vim.cmd.redraw()
+            -- Force quit (discards all changes in the current buffer)
+            vim.cmd.quit({ bang = true })
         end
     end)
 end
@@ -26,10 +29,9 @@ end
 -- Handles the save workflow for modified buffers
 ---@return nil
 local function prompt_save_or_discard()
-    -- Check if current buffer has unsaved changes
     if vim.bo.modified then
         local options = { "Yes", "No" }
-        -- Create save dialog
+        -- Prompt user to save or not
         vim.ui.select(options, {
             prompt = "Buffer has unsaved changes. Save changes?",
             format_item = function(item)
@@ -37,22 +39,25 @@ local function prompt_save_or_discard()
             end,
         }, function(choice)
             if choice == "Yes" then
-                vim.cmd.write({ bang = true }) -- Force save
-                vim.cmd.redraw()               -- Clear screen
-                open_new_file()                -- Prompt for new file
+                -- Force save: equivalent to :write!
+                vim.cmd.write({ bang = true })
+                vim.cmd.redraw()
+                open_new_file()
             else
-                vim.cmd.redraw()               -- Clear screen
-                open_new_file()                -- Prompt for new file without saving
+                -- Discard changes: skip saving
+                vim.cmd.redraw()
+                open_new_file()
             end
         end)
     else
-        open_new_file() -- No changes, directly prompt for new file
+        -- If no modifications, just jump straight to open_new_file
+        open_new_file()
     end
 end
 
--- Keymapping: <leader>w triggers the save/new file workflow
+-- Keymapping: <leader>w triggers the workflow
 vim.keymap.set("n", "<leader>w", prompt_save_or_discard, {
     noremap = true,
     silent = true,
-    desc = "Save current file and open new file workflow"
+    desc = "Prompt to save current file and then open new file"
 })
