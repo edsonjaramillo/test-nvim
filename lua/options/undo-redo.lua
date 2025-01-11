@@ -38,12 +38,6 @@ local function prompt_git_revert()
     end)
 end
 
--- Map to <leader>gr
-vim.keymap.set("n", "<leader>gr", prompt_git_revert, {
-    noremap = true,
-    silent = true,
-    desc = "Restore file to last git commit"
-})
 
 -- Add keymapping for git revert
 vim.keymap.set("n", "<leader>z", prompt_git_revert, {
@@ -51,5 +45,20 @@ vim.keymap.set("n", "<leader>z", prompt_git_revert, {
     silent = true,
     desc = "Revert all changes to last git commit"
 })
-vim.keymap.set("n", "<C-z>", undo, { noremap = true, silent = true, desc = "Undo" })
-vim.keymap.set("n", "<C-x>", redo, { noremap = true, silent = true, desc = "Redo" })
+
+-- Define mappings for undo/redo operations
+local mappings = {
+    { modes = { "n", "i" }, key = "<C-z>", action = undo, desc = "Undo" },
+    { modes = { "n", "i" }, key = "<C-x>", action = redo, desc = "Redo" },
+}
+
+-- Apply all mappings
+for _, mapping in ipairs(mappings) do
+    for _, mode in ipairs(mapping.modes) do
+        vim.keymap.set(mode, mapping.key, mapping.action, {
+            noremap = true,
+            silent = true,
+            desc = mapping.desc .. " in " .. mode .. " mode"
+        })
+    end
+end
