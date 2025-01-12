@@ -5,7 +5,6 @@ return {
         local nvimtree = require("nvim-tree")
 
         nvimtree.setup({
-            hide_root_name = true,
             view = {
                 width = 35,
                 relativenumber = true,
